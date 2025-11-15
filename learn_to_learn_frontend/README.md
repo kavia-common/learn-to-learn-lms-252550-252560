@@ -88,6 +88,28 @@ Components use classes such as:
 
 Do not change or add environment variables. Continue using the existing `REACT_APP_*` values provided in the environment (e.g., `REACT_APP_API_BASE`, `REACT_APP_BACKEND_URL`, etc.).
 
+### Remote API Mode (optional)
+
+You can enable remote API integration instead of local/mock data by setting the following environment variables:
+
+- REACT_APP_FEATURE_FLAGS=remote
+- REACT_APP_API_BASE=<remote API base URL>
+
+Example .env settings:
+```
+REACT_APP_FEATURE_FLAGS=remote
+REACT_APP_API_BASE=https://example-openapi.mockapi.io/v1
+```
+
+Notes:
+- Ensure the remote API has CORS enabled to allow requests from your frontend origin (e.g., http://localhost:3000). If not, configure the API to include appropriate Access-Control-Allow-Origin headers or use a proxy during development.
+- Example open-source/public APIs you can try:
+  - https://dummyjson.com
+  - https://jsonplaceholder.typicode.com
+  - https://api.publicapis.org
+- Set only REACT_APP_API_BASE to the API root; the app will append resource paths defined in src/api/endpoints.js.
+- After changing env vars, restart the dev server.
+
 ## Learn More
 
 To learn React, check out the [React documentation](https://reactjs.org/).
