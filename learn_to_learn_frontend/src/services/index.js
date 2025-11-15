@@ -5,6 +5,7 @@
 export * as storage from './storage';
 export * from './categoryService';
 export * from './courseService';
+export * from './levelService';
 export { authService } from './authService';
 
 // PUBLIC_INTERFACE
