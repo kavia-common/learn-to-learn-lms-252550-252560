@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { EmptyState, Loader } from "../../components";
-import { fetchProgress, progressSelectors } from "../../store/slices/progressSlice";
+import { fetchProgress, progressSelectors, updateProgress } from "../../store/slices/progressSlice";
 import { fetchCourses } from "../../store/slices/coursesSlice";
 
 /**
@@ -74,6 +74,22 @@ function Progress() {
                 />
               </div>
               <p className="card-desc" style={{ marginTop: 6 }}>{percent}% completed</p>
+              <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                <label htmlFor={`slider-${p.id}`} style={{ fontSize: 12 }}>Adjust:</label>
+                <input
+                  id={`slider-${p.id}`}
+                  type="range"
+                  min={0}
+                  max={100}
+                  value={percent}
+                  onChange={(e) => {
+                    const next = Number(e.target.value || 0);
+                    dispatch(updateProgress({ id: p.id, courseId: p.courseId, percent: next }));
+                  }}
+                  style={{ width: 160 }}
+                  aria-label={`Adjust progress for ${title}`}
+                />
+              </div>
             </article>
           );
         })}

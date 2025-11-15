@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useSearchParams } from "react-router-dom";
 import { Loader, EmptyState, Pagination } from "../../components";
-import { fetchCourses, coursesSelectors } from "../../store/slices/coursesSlice";
+import { fetchCourses, fetchCoursesQuery, coursesSelectors } from "../../store/slices/coursesSlice";
 import { fetchCategories, categoriesSelectors } from "../../store/slices/categoriesSlice";
 
 /**
@@ -21,7 +21,7 @@ function Catalog() {
   const [category, setCategory] = useState(searchParams.get("cat") || "");
   const [level, setLevel] = useState(searchParams.get("lvl") || "");
   const [page, setPage] = useState(Number(searchParams.get("p") || 1));
-  const pageSize = 9;
+  const pageSize = 20;
 
   const courses = useSelector(coursesSelectors.selectAll);
   const coursesLoading = useSelector(coursesSelectors.selectLoading);
@@ -29,9 +29,29 @@ function Catalog() {
   const categoriesLoading = useSelector(categoriesSelectors.selectLoading);
 
   useEffect(() => {
-    dispatch(fetchCourses());
+    // Load categories immediately
     dispatch(fetchCategories());
   }, [dispatch]);
+
+  // Load courses using server (remote) pagination/search when feature flag is set.
+  useEffect(() => {
+    const flags = (process.env.REACT_APP_FEATURE_FLAGS || "").toLowerCase();
+    const base = process.env.REACT_APP_API_BASE || "";
+    const remote = Boolean(base) && flags.split(",").map((s) => s.trim()).includes("remote");
+    if (remote) {
+      dispatch(
+        fetchCoursesQuery({
+          category: category || undefined,
+          q: (query || "").trim() || undefined,
+          limit: pageSize,
+          page,
+        })
+      );
+    } else {
+      // fallback to legacy local fetch and client-side filter
+      dispatch(fetchCourses());
+    }
+  }, [dispatch, category, query, page, pageSize]);
 
   // Apply filters client-side (remote APIs could support query server-side later)
   const filtered = useMemo(() => {
@@ -53,9 +73,16 @@ function Catalog() {
     return list;
   }, [courses, query, category, level]);
 
-  const total = filtered.length;
+  const flags = (process.env.REACT_APP_FEATURE_FLAGS || "").toLowerCase();
+  const base = process.env.REACT_APP_API_BASE || "";
+  const remote = Boolean(base) && flags.split(",").map((s) => s.trim()).includes("remote");
+
+  // Always call hooks unconditionally
+  const storeTotal = useSelector((s) => s.courses?.meta?.total) || 0;
+
+  const total = remote ? storeTotal : filtered.length;
   const startIdx = (page - 1) * pageSize;
-  const pageItems = filtered.slice(startIdx, startIdx + pageSize);
+  const pageItems = remote ? courses : filtered.slice(startIdx, startIdx + pageSize);
 
   // Sync URL params for shareability
   useEffect(() => {
@@ -185,6 +212,9 @@ function Catalog() {
         </div>
       ) : (
         <>
+          <div aria-live="polite" style={{ marginTop: 8, color: "var(--text-secondary)" }}>
+            {typeof total === "number" ? `${total} result${total === 1 ? "" : "s"}` : null}
+          </div>
           <div className="cards" style={{ marginTop: 16 }}>
             {pageItems.map((c) => (
               <article className="card" key={c.id} aria-labelledby={`course-${c.id}-title`}>

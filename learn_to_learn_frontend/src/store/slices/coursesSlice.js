@@ -7,9 +7,25 @@ const { coursesService } = getServices();
 
 // PUBLIC_INTERFACE
 export const fetchCourses = createAsyncThunk("courses/fetchAll", async () => {
-  const items = await coursesService.list();
-  return items;
+  const result = await coursesService.list();
+  // Support both array and {items,total,...}
+  return Array.isArray(result) ? result : (result.items || []);
 });
+
+// PUBLIC_INTERFACE
+export const fetchCoursesQuery = createAsyncThunk(
+  "courses/fetchQuery",
+  async ({ category, q, limit = 20, page = 1 } = {}) => {
+    const skip = Math.max(0, (Number(page) - 1) * Number(limit));
+    const result = await coursesService.list({ category, q, limit, skip });
+    return {
+      items: Array.isArray(result) ? result : (result.items || []),
+      total: Number(result?.total ?? (Array.isArray(result) ? result.length : 0)),
+      page,
+      limit,
+    };
+  }
+);
 
 // PUBLIC_INTERFACE
 export const fetchCourseById = createAsyncThunk("courses/fetchById", async (id) => {
@@ -35,7 +51,10 @@ export const deleteCourse = createAsyncThunk("courses/delete", async (id) => {
   return id;
 });
 
-const initialState = createDefaultEntityState();
+const initialState = {
+  ...createDefaultEntityState(),
+  meta: { total: 0, page: 1, limit: 20 },
+};
 
 const coursesSlice = createSlice({
   name: "courses",
@@ -51,6 +70,21 @@ const coursesSlice = createSlice({
         const { byId, allIds } = normalizeArray(action.payload || []);
         state.byId = byId;
         state.allIds = allIds;
+        state.meta = { ...state.meta, total: allIds.length };
+      })
+      .addCase(fetchCoursesQuery.pending, onPending)
+      .addCase(fetchCoursesQuery.rejected, onRejected)
+      .addCase(fetchCoursesQuery.fulfilled, (state, action) => {
+        state.loading = false;
+        const items = action.payload?.items || [];
+        const { byId, allIds } = normalizeArray(items);
+        state.byId = byId;
+        state.allIds = allIds;
+        state.meta = {
+          total: Number(action.payload?.total ?? allIds.length),
+          page: Number(action.payload?.page ?? 1),
+          limit: Number(action.payload?.limit ?? 20),
+        };
       })
       // fetch by id
       .addCase(fetchCourseById.pending, onPending)

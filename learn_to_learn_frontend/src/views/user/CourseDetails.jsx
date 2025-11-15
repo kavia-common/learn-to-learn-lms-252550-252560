@@ -88,6 +88,20 @@ function CourseDetails() {
       <h2 style={{ marginTop: 8 }}>{course.title}</h2>
       <p className="card-desc" style={{ marginTop: 4 }}>{course.description || "No description provided."}</p>
 
+      {course.thumbnailUrl ? (
+        <img
+          src={course.thumbnailUrl}
+          alt={course.title}
+          style={{ marginTop: 8, width: "100%", maxWidth: 640, borderRadius: 12 }}
+        />
+      ) : null}
+
+      <div style={{ display: "flex", gap: 8, marginTop: 8, color: "var(--text-secondary)" }}>
+        {course.level ? <span>Level: {course.level}</span> : null}
+        {course.durationMinutes ? <span>Duration: {course.durationMinutes}m</span> : null}
+        {course.author ? <span>Author: {course.author}</span> : null}
+      </div>
+
       <div style={{ display: "flex", gap: 12, marginTop: 8 }}>
         {existingEnrollment ? (
           <>

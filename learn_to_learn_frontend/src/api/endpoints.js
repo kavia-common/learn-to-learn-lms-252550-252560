@@ -31,4 +31,12 @@ export const endpoints = {
     root: "/progress",
     byId: (id) => `/progress/${encodeURIComponent(id)}`,
   },
+
+  // DummyJSON specific endpoints (used when remote feature flag is enabled)
+  dummy: {
+    categories: "/products/categories",
+    categoryProductsRoot: "/products/category", // use: `${root}/${categorySlug}`
+    productsRoot: "/products", // by id: `${root}/${id}`
+    searchRoot: "/products/search", // use: `${root}?q=term`
+  },
 };

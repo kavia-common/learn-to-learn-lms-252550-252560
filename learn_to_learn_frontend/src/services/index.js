@@ -6,13 +6,22 @@
 
 import { createApiClient } from "../api/client";
 import { endpoints } from "../api/endpoints";
-import { adaptUser, adaptCourse, adaptCategory, adaptEnrollment, adaptProgress } from "../api/adapters/openapiAdapter";
+import {
+  adaptUser,
+  adaptCourse,
+  adaptCategory,
+  adaptEnrollment,
+  adaptProgress,
+  mapCategoryListFromDummyJSON,
+  mapProductListFromDummyJSON,
+  mapProductFromDummyJSON,
+} from "../api/adapters/openapiAdapter";
 import { storage } from "./storage";
 
 function hasRemoteEnabled() {
   const flags = (process.env.REACT_APP_FEATURE_FLAGS || "").toLowerCase();
   const base = process.env.REACT_APP_API_BASE || "";
-  return base && flags.split(",").map((s) => s.trim()).includes("remote");
+  return Boolean(base) && flags.split(",").map((s) => s.trim()).includes("remote");
 }
 
 const api = createApiClient({});
@@ -80,52 +89,71 @@ function remoteUsersService() {
 }
 
 function remoteCoursesService() {
+  // DummyJSON-backed implementation
   return {
-    async list() {
-      const data = await api.get(endpoints.courses.root);
-      return Array.isArray(data) ? data.map(adaptCourse) : [];
+    /**
+     * list with options: { category, q, limit=20, skip=0 }
+     * If q provided -> /products/search?q=...
+     * Else if category provided -> /products/category/{category}?limit&skip
+     * Else -> /products?limit&skip
+     */
+    async list(opts = {}) {
+      const { category, q, limit = 20, skip = 0 } = opts || {};
+      let payload;
+      if (q && String(q).trim().length > 0) {
+        payload = await api.get(`${endpoints.dummy.searchRoot}`, {
+          query: { q: String(q).trim(), limit, skip, select: "id,title,description,price,thumbnail,rating,brand,category" },
+        });
+      } else if (category) {
+        payload = await api.get(`${endpoints.dummy.categoryProductsRoot}/${encodeURIComponent(category)}`, {
+          query: { limit, skip, select: "id,title,description,price,thumbnail,rating,brand,category" },
+        });
+      } else {
+        payload = await api.get(`${endpoints.dummy.productsRoot}`, {
+          query: { limit, skip, select: "id,title,description,price,thumbnail,rating,brand,category" },
+        });
+      }
+      const mapped = mapProductListFromDummyJSON(payload);
+      return mapped;
     },
     async get(id) {
-      const data = await api.get(endpoints.courses.byId(id));
-      return adaptCourse(data);
+      const data = await api.get(`${endpoints.dummy.productsRoot}/${encodeURIComponent(id)}`);
+      return mapProductFromDummyJSON(data);
     },
+    // keep create/update/remove as no-ops for DummyJSON (not supported)
     async create(payload) {
-      const data = await api.post(endpoints.courses.root, payload);
-      return adaptCourse(data);
+      return adaptCourse({ id: storage.genId("course"), ...payload });
     },
     async update(payload) {
-      const { id, ...changes } = payload || {};
-      const data = await api.put(endpoints.courses.byId(id), changes);
-      return adaptCourse(data);
+      return adaptCourse(payload);
     },
     async remove(id) {
-      await api.delete(endpoints.courses.byId(id));
       return { id };
     },
   };
 }
 
 function remoteCategoriesService() {
+  // DummyJSON-backed categories
   return {
     async list() {
-      const data = await api.get(endpoints.categories.root);
-      return Array.isArray(data) ? data.map(adaptCategory) : [];
+      const arr = await api.get(endpoints.dummy.categories);
+      return mapCategoryListFromDummyJSON(arr);
     },
     async get(id) {
-      const data = await api.get(endpoints.categories.byId(id));
-      return adaptCategory(data);
+      // DummyJSON has no category-by-id; emulate by searching list
+      const arr = await api.get(endpoints.dummy.categories);
+      const mapped = mapCategoryListFromDummyJSON(arr);
+      return mapped.find((c) => String(c.id) === String(id)) || null;
     },
     async create(payload) {
-      const data = await api.post(endpoints.categories.root, payload);
-      return adaptCategory(data);
+      // Not supported remotely; return local-adapted
+      return adaptCategory({ id: storage.genId("cat"), ...payload });
     },
     async update(payload) {
-      const { id, ...changes } = payload || {};
-      const data = await api.put(endpoints.categories.byId(id), changes);
-      return adaptCategory(data);
+      return adaptCategory(payload);
     },
     async remove(id) {
-      await api.delete(endpoints.categories.byId(id));
       return { id };
     },
   };
@@ -158,26 +186,79 @@ function remoteEnrollmentsService() {
 }
 
 function remoteProgressService() {
+  // Mock PATCH-like update via localStorage to persist progress per user
+  const USER_KEY = (userId) => `bb_progress_${userId || "anon"}`;
+  function readAll(userId) {
+    try {
+      const raw = localStorage.getItem(USER_KEY(userId));
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  }
+  function writeAll(userId, arr) {
+    try {
+      localStorage.setItem(USER_KEY(userId), JSON.stringify(arr));
+    } catch {
+      // ignore
+    }
+  }
+  function nowIso() {
+    return new Date().toISOString();
+  }
+
   return {
-    async list() {
-      const data = await api.get(endpoints.progress.root);
-      return Array.isArray(data) ? data.map(adaptProgress) : [];
+    async list({ userId } = {}) {
+      return readAll(userId);
     },
-    async get(id) {
-      const data = await api.get(endpoints.progress.byId(id));
-      return adaptProgress(data);
+    async get(id, { userId } = {}) {
+      const arr = readAll(userId);
+      return arr.find((x) => String(x.id) === String(id)) || null;
     },
-    async create(payload) {
-      const data = await api.post(endpoints.progress.root, payload);
-      return adaptProgress(data);
+    async create(payload = {}, { userId } = {}) {
+      const arr = readAll(userId);
+      const item = {
+        id: payload.id || storage.genId("prog"),
+        userId: userId || payload.userId || "anon",
+        courseId: payload.courseId,
+        percent: Number(payload.percent ?? 0),
+        updatedAt: nowIso(),
+      };
+      arr.push(item);
+      writeAll(userId || item.userId, arr);
+      return item;
     },
-    async update(payload) {
-      const { id, ...changes } = payload || {};
-      const data = await api.put(endpoints.progress.byId(id), changes);
-      return adaptProgress(data);
+    // PUBLIC_INTERFACE
+    async update(payload = {}, { userId } = {}) {
+      // payload can be either { id, percent } or { courseId, percent }
+      const arr = readAll(userId);
+      let idx = -1;
+      if (payload.id) {
+        idx = arr.findIndex((x) => String(x.id) === String(payload.id));
+      } else if (payload.courseId) {
+        idx = arr.findIndex((x) => String(x.courseId) === String(payload.courseId));
+      }
+      let item;
+      if (idx >= 0) {
+        item = { ...arr[idx], percent: Number(payload.percent ?? arr[idx].percent ?? 0), updatedAt: nowIso() };
+        arr[idx] = item;
+      } else {
+        item = {
+          id: storage.genId("prog"),
+          userId: userId || payload.userId || "anon",
+          courseId: payload.courseId,
+          percent: Number(payload.percent ?? 0),
+          updatedAt: nowIso(),
+        };
+        arr.push(item);
+      }
+      writeAll(userId || item.userId, arr);
+      return item;
     },
-    async remove(id) {
-      await api.delete(endpoints.progress.byId(id));
+    async remove(id, { userId } = {}) {
+      const arr = readAll(userId);
+      const next = arr.filter((x) => String(x.id) !== String(id));
+      writeAll(userId, next);
       return { id };
     },
   };

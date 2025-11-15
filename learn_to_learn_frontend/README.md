@@ -95,19 +95,29 @@ You can enable remote API integration instead of local/mock data by setting the 
 - REACT_APP_FEATURE_FLAGS=remote
 - REACT_APP_API_BASE=<remote API base URL>
 
-Example .env settings:
+Example .env settings for DummyJSON:
 ```
 REACT_APP_FEATURE_FLAGS=remote
-REACT_APP_API_BASE=https://example-openapi.mockapi.io/v1
+REACT_APP_API_BASE=https://dummyjson.com
 ```
 
 Notes:
-- Ensure the remote API has CORS enabled to allow requests from your frontend origin (e.g., http://localhost:3000). If not, configure the API to include appropriate Access-Control-Allow-Origin headers or use a proxy during development.
-- Example open-source/public APIs you can try:
-  - https://dummyjson.com
-  - https://jsonplaceholder.typicode.com
-  - https://api.publicapis.org
-- Set only REACT_APP_API_BASE to the API root; the app will append resource paths defined in src/api/endpoints.js.
+- Ensure the remote API has CORS enabled to allow requests from your frontend origin (e.g., http://localhost:3000). DummyJSON already supports CORS.
+- When remote mode is active and using DummyJSON:
+  - Subjects: GET /products/categories
+  - Course list:
+    - By category: GET /products/category/{category}?limit=20&skip={page*20}&select=id,title,description,price,thumbnail,rating,brand,category
+    - By search: GET /products/search?q={term}&limit&skip&select=...
+    - Default list: GET /products?limit&skip&select=...
+  - Course details: GET /products/{id}
+  - Mapping:
+    - Category { id: slug(categoryName), name, description:'', color }
+    - Course { id, title, description, categoryId, level(derived from rating), durationMinutes(price*2), lessonsCount(stock/10), author(brand), tags:[], thumbnailUrl, publishedAt:null, status:'published' }
+- Progress PATCH is mocked locally:
+  - Service: progressService.update({ id|courseId, percent }) writes to localStorage key: bb_progress_{userId} (userId optional)
+  - Returns updated progress object: { id, userId, courseId, percent, updatedAt }
+- Catalog:
+  - Shows subjects as filters and supports search (q) and pagination (limit/skip). Query params are preserved for back/forward navigation.
 - After changing env vars, restart the dev server.
 
 ## Learn More
