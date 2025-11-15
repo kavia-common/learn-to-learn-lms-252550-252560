@@ -48,7 +48,7 @@ function Enrollments() {
       <h2 style={{ marginTop: 0 }}>My Enrollments</h2>
       <div className="cards" style={{ marginTop: "var(--space-3)" }}>
         {enrollments.map((e) => {
-          const course = coursesById[e.courseId];
+          const course = coursesById?.[e.courseId] || null;
           return (
             <article key={e.id} className="card" aria-labelledby={`enr-${e.id}-title`}>
               <h3 id={`enr-${e.id}-title`} className="card-title">

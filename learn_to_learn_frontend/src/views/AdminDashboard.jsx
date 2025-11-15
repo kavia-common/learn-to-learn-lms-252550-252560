@@ -32,7 +32,7 @@ function AdminDashboard() {
   const loading = usersLoading || coursesLoading || enrollmentsLoading;
 
   const totalUsers = users.length;
-  const totalCourses = courses.length;
+  const totalCourses = useSelector((s) => s.courses?.meta?.total) || courses.length || 0;
   const activeEnrollments = enrollments.length;
 
   return (

@@ -97,9 +97,10 @@ function CourseDetails() {
       ) : null}
 
       <div style={{ display: "flex", gap: 8, marginTop: 8, color: "var(--text-secondary)" }}>
-        {course.level ? <span>Level: {course.level}</span> : null}
-        {course.durationMinutes ? <span>Duration: {course.durationMinutes}m</span> : null}
-        {course.author ? <span>Author: {course.author}</span> : null}
+        {course.level ? <span aria-label="level">Level: {course.level}</span> : null}
+        {course.durationMinutes ? <span aria-label="duration">Duration: {course.durationMinutes}m</span> : null}
+        {course.author ? <span aria-label="author">Author: {course.author}</span> : null}
+        {course.categoryId ? <span aria-label="category">Category: {course.categoryId}</span> : null}
       </div>
 
       <div style={{ display: "flex", gap: 12, marginTop: 8 }}>

@@ -56,19 +56,22 @@ function Catalog() {
   // Apply filters client-side (remote APIs could support query server-side later)
   const filtered = useMemo(() => {
     let list = courses || [];
-    if (query.trim()) {
-      const q = query.trim().toLowerCase();
+    const q = (query || "").trim().toLowerCase();
+    if (q) {
       list = list.filter(
         (c) =>
-          c.title?.toLowerCase().includes(q) ||
-          c.description?.toLowerCase().includes(q)
+          (c.title || "").toLowerCase().includes(q) ||
+          (c.description || "").toLowerCase().includes(q)
       );
     }
     if (category) {
+      // category in our model is categoryId = DummyJSON category slug/name
       list = list.filter((c) => String(c.categoryId || "") === String(category));
     }
     if (level) {
-      list = list.filter((c) => String(c.level || "").toLowerCase() === String(level).toLowerCase());
+      list = list.filter(
+        (c) => String(c.level || "").toLowerCase() === String(level).toLowerCase()
+      );
     }
     return list;
   }, [courses, query, category, level]);

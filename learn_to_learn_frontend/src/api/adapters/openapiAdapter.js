@@ -24,7 +24,10 @@ export function adaptUser(remote) {
   };
 }
 
- // PUBLIC_INTERFACE
+ /**
+ * PUBLIC_INTERFACE
+ * Generic course adapter (local/mock). For DummyJSON use mapProductFromDummyJSON().
+ */
 export function adaptCourse(remote) {
   const id = safeId(remote);
   return {
@@ -33,8 +36,12 @@ export function adaptCourse(remote) {
     description: remote?.description ?? remote?.summary ?? "",
     categoryId: remote?.categoryId ?? remote?.category?.id ?? remote?.category ?? null,
     level: remote?.level ?? "beginner",
-    // extras
+    durationMinutes: remote?.durationMinutes ?? null,
+    lessonsCount: remote?.lessonsCount ?? null,
+    author: remote?.author ?? null,
     tags: remote?.tags ?? [],
+    thumbnailUrl: remote?.thumbnailUrl ?? remote?.thumbnail ?? null,
+    images: Array.isArray(remote?.images) ? remote.images : [],
     _raw: remote,
   };
 }
