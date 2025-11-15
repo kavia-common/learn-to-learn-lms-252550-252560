@@ -44,7 +44,7 @@ function Progress() {
   return (
     <div style={{ padding: 24 }}>
       <h2 style={{ marginTop: 0 }}>My Progress</h2>
-      <div className="cards" style={{ marginTop: 12 }}>
+      <div className="cards" style={{ marginTop: "var(--space-3)" }}>
         {items.map((p) => {
           const percent = Math.max(0, Math.min(100, Number(p.percent || 0)));
           const title = courses[p.courseId]?.title || `Course ${p.courseId}`;

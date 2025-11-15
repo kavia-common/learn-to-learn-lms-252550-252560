@@ -8,7 +8,7 @@ import { NavLink, Outlet } from "react-router-dom";
 function AdminLayout() {
   return (
     <div style={{ padding: 24, width: "100%" }}>
-      <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+      <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--space-3)", flexWrap: "wrap" }}>
         <div>
           <h2 style={{ margin: 0 }}>Admin</h2>
           <p className="card-desc" style={{ marginTop: 4 }}>Manage platform content and users</p>

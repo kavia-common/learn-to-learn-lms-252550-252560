@@ -48,7 +48,7 @@ function Dashboard() {
         </div>
       ) : (
         <>
-          <div className="cards" style={{ marginTop: 12 }}>
+          <div className="cards" style={{ marginTop: "var(--space-3)" }}>
             <div className="card">
               <h3 className="card-title">Enrollments</h3>
               <p className="card-desc">{totalEnrollments} active</p>

@@ -12,15 +12,15 @@ function Sidebar() {
       style={{
         width: 220,
         borderRight: "1px solid var(--border-color)",
-        padding: 16,
+        padding: "var(--space-4)",
         background: "var(--bg-elevated)",
         minHeight: "calc(100vh - 64px)",
       }}
     >
-      <div style={{ fontWeight: 800, marginBottom: 12, color: "var(--text-secondary)" }}>
+      <div style={{ fontWeight: 800, marginBottom: "var(--space-3)", color: "var(--text-secondary)" }}>
         Menu
       </div>
-      <nav aria-label="Sidebar" style={{ display: "grid", gap: 8 }}>
+      <nav aria-label="Sidebar" style={{ display: "grid", gap: "var(--space-2)" }}>
         <NavLink to="/dashboard" className="btn btn-outline">Overview</NavLink>
         <NavLink to="/catalog" className="btn btn-outline">Catalog</NavLink>
         <NavLink to="/enrollments" className="btn btn-outline">Enrollments</NavLink>

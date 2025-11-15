@@ -74,7 +74,7 @@ function AdminCategories() {
   return (
     <div>
       <div className="card" style={{ padding: 16 }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 8 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: "var(--space-2)" }}>
           <div>
             <label htmlFor="cat-q" style={{ fontWeight: 600 }}>Search</label>
             <input

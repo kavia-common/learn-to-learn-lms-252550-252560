@@ -97,7 +97,7 @@ function AdminCourses() {
   return (
     <div>
       <div className="card" style={{ padding: 16 }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 180px 160px auto", gap: 8 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 180px 160px auto", gap: "var(--space-2)" }}>
           <div>
             <label htmlFor="course-q" style={{ fontWeight: 600 }}>Search</label>
             <input

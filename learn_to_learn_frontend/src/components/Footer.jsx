@@ -14,12 +14,12 @@ function Footer() {
         borderTop: "1px solid var(--border-color)",
         background: "var(--bg-elevated)",
         color: "var(--text-secondary)",
-        padding: "16px 24px",
+        padding: "12px 24px",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
         flexWrap: "wrap",
-        gap: 12,
+        gap: "var(--space-3)",
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>

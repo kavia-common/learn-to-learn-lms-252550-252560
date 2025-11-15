@@ -46,7 +46,7 @@ function AdminDashboard() {
         </div>
       ) : (
         <>
-          <div className="cards" style={{ marginTop: 12 }}>
+          <div className="cards" style={{ marginTop: "var(--space-3)" }}>
             <article className="card" aria-labelledby="kpi-users">
               <h4 id="kpi-users" className="card-title">Total Users</h4>
               <p className="card-desc" style={{ fontSize: 24, fontWeight: 800 }}>{totalUsers}</p>

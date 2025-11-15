@@ -42,7 +42,7 @@ function Home() {
         <h2 id="featured-courses-heading" style={{ marginTop: 24, textAlign: "left" }}>
           Featured Courses
         </h2>
-        <div className="cards" style={{ marginTop: 12 }}>
+        <div className="cards" style={{ marginTop: "var(--space-3)" }}>
           <article className="card" aria-labelledby="fc1-title">
             <h3 className="card-title" id="fc1-title">
               Focus Fundamentals

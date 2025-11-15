@@ -16,7 +16,7 @@ function Navbar({ theme = "light", onToggleTheme }) {
           <span className="brand-text">BrainBoost</span>
         </Link>
       </div>
-      <nav aria-label="Top" style={{ display: "flex", gap: 12 }}>
+      <nav aria-label="Top" style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
         <NavLink to="/dashboard" className="btn btn-outline">Dashboard</NavLink>
         <NavLink to="/catalog" className="btn btn-outline">Catalog</NavLink>
         <NavLink to="/enrollments" className="btn btn-outline">Enrollments</NavLink>

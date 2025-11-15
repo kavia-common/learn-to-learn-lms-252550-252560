@@ -46,7 +46,7 @@ function Enrollments() {
   return (
     <div style={{ padding: 24 }}>
       <h2 style={{ marginTop: 0 }}>My Enrollments</h2>
-      <div className="cards" style={{ marginTop: 12 }}>
+      <div className="cards" style={{ marginTop: "var(--space-3)" }}>
         {enrollments.map((e) => {
           const course = coursesById[e.courseId];
           return (

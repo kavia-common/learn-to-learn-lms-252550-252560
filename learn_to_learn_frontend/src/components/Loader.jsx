@@ -27,7 +27,7 @@ function Loader({ label = "Loading...", inline = false }) {
           height: 18,
           borderRadius: "50%",
           border: "2px solid rgba(37,99,235,0.25)",
-          borderTopColor: "var(--primary)",
+          borderTopColor: "var(--primary-600)",
           animation: "bb-spin 0.9s linear infinite",
         }}
       />

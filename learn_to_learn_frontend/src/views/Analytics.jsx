@@ -9,7 +9,7 @@ function Analytics() {
     <div style={{ padding: 24 }}>
       <h2 style={{ marginTop: 0 }}>Analytics</h2>
       <p className="card-desc">Visualize your performance with actionable insights.</p>
-      <div className="cards" style={{ marginTop: 12 }}>
+      <div className="cards" style={{ marginTop: "var(--space-3)" }}>
         <div className="card">
           <h3 className="card-title">Completion</h3>
           <p className="card-desc">Overall 62% completed this month.</p>

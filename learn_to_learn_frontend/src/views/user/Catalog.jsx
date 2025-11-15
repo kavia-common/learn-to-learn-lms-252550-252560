@@ -74,8 +74,8 @@ function Catalog() {
       <h2 style={{ marginTop: 0 }}>Course Catalog</h2>
       <p className="card-desc">Browse all available BrainBoost courses.</p>
 
-      <section aria-label="Filters" style={{ marginTop: 12, display: "grid", gap: 12 }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 240px 200px", gap: 12 }}>
+      <section aria-label="Filters" style={{ marginTop: 12, display: "grid", gap: "var(--space-3)" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 240px 200px", gap: "var(--space-3)" }}>
           <div>
             <label htmlFor="catalog-search" style={{ display: "block", fontWeight: 600 }}>
               Search
