@@ -1,22 +1,9 @@
 /* Progress domain slice: tracks module/course progress entries */
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { createDefaultEntityState, normalizeArray, onPending, onRejected, createEntitySelectors } from "./utils";
+import { getServices } from "../../services";
 
-/**
- * Placeholder service:
- * - progressService.list()
- * - progressService.get(id)
- * - progressService.create(payload)
- * - progressService.update(payload)
- * - progressService.remove(id)
- */
-const progressService = {
-  list: async () => [],
-  get: async (id) => ({ id }),
-  create: async (payload) => payload,
-  update: async (payload) => payload,
-  remove: async (id) => ({ id }),
-};
+const { progressService } = getServices();
 
 // PUBLIC_INTERFACE
 export const fetchProgress = createAsyncThunk("progress/fetchAll", async () => {

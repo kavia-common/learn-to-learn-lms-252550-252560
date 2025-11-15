@@ -1,61 +1,37 @@
 /* Courses domain slice: manages courses with normalized state and async thunks */
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { createDefaultEntityState, normalizeArray, onPending, onRejected, createEntitySelectors } from "./utils";
+import { getServices } from "../../services";
 
-/**
- * Placeholder service module interface (to be implemented next step):
- * - courseService.list()
- * - courseService.get(id)
- * - courseService.create(payload)
- * - courseService.update({id, ...changes})
- * - courseService.remove(id)
- */
-const courseService = {
-  list: async () => {
-    // To be implemented in next step
-    return [];
-  },
-  get: async (id) => {
-    return { id };
-  },
-  create: async (payload) => {
-    return payload;
-  },
-  update: async (payload) => {
-    return payload;
-  },
-  remove: async (id) => {
-    return { id };
-  },
-};
+const { coursesService } = getServices();
 
 // PUBLIC_INTERFACE
 export const fetchCourses = createAsyncThunk("courses/fetchAll", async () => {
-  const items = await courseService.list();
+  const items = await coursesService.list();
   return items;
 });
 
 // PUBLIC_INTERFACE
 export const fetchCourseById = createAsyncThunk("courses/fetchById", async (id) => {
-  const item = await courseService.get(id);
+  const item = await coursesService.get(id);
   return item;
 });
 
 // PUBLIC_INTERFACE
 export const createCourse = createAsyncThunk("courses/create", async (payload) => {
-  const created = await courseService.create(payload);
+  const created = await coursesService.create(payload);
   return created;
 });
 
 // PUBLIC_INTERFACE
 export const updateCourse = createAsyncThunk("courses/update", async (payload) => {
-  const updated = await courseService.update(payload);
+  const updated = await coursesService.update(payload);
   return updated;
 });
 
 // PUBLIC_INTERFACE
 export const deleteCourse = createAsyncThunk("courses/delete", async (id) => {
-  await courseService.remove(id);
+  await coursesService.remove(id);
   return id;
 });
 

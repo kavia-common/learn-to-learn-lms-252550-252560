@@ -1,46 +1,33 @@
 /* Enrollments domain slice */
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { createDefaultEntityState, normalizeArray, onPending, onRejected, createEntitySelectors } from "./utils";
+import { getServices } from "../../services";
 
-/**
- * Placeholder service:
- * - enrollmentService.list()
- * - enrollmentService.get(id)
- * - enrollmentService.create(payload)
- * - enrollmentService.update(payload)
- * - enrollmentService.remove(id)
- */
-const enrollmentService = {
-  list: async () => [],
-  get: async (id) => ({ id }),
-  create: async (payload) => payload,
-  update: async (payload) => payload,
-  remove: async (id) => ({ id }),
-};
+const { enrollmentsService } = getServices();
 
 // PUBLIC_INTERFACE
 export const fetchEnrollments = createAsyncThunk("enrollments/fetchAll", async () => {
-  return enrollmentService.list();
+  return enrollmentsService.list();
 });
 
 // PUBLIC_INTERFACE
 export const fetchEnrollmentById = createAsyncThunk("enrollments/fetchById", async (id) => {
-  return enrollmentService.get(id);
+  return enrollmentsService.get(id);
 });
 
 // PUBLIC_INTERFACE
 export const createEnrollment = createAsyncThunk("enrollments/create", async (payload) => {
-  return enrollmentService.create(payload);
+  return enrollmentsService.create(payload);
 });
 
 // PUBLIC_INTERFACE
 export const updateEnrollment = createAsyncThunk("enrollments/update", async (payload) => {
-  return enrollmentService.update(payload);
+  return enrollmentsService.update(payload);
 });
 
 // PUBLIC_INTERFACE
 export const deleteEnrollment = createAsyncThunk("enrollments/delete", async (id) => {
-  await enrollmentService.remove(id);
+  await enrollmentsService.remove(id);
   return id;
 });
 

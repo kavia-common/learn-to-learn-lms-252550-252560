@@ -1,46 +1,33 @@
 /* Users domain slice: manages users with normalized state and async thunks */
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { createDefaultEntityState, normalizeArray, onPending, onRejected, createEntitySelectors } from "./utils";
+import { getServices } from "../../services";
 
-/**
- * Placeholder service to be implemented:
- * - userService.list()
- * - userService.get(id)
- * - userService.create(payload)
- * - userService.update(payload)
- * - userService.remove(id)
- */
-const userService = {
-  list: async () => [],
-  get: async (id) => ({ id }),
-  create: async (payload) => payload,
-  update: async (payload) => payload,
-  remove: async (id) => ({ id }),
-};
+const { usersService } = getServices();
 
 // PUBLIC_INTERFACE
 export const fetchUsers = createAsyncThunk("users/fetchAll", async () => {
-  return userService.list();
+  return usersService.list();
 });
 
 // PUBLIC_INTERFACE
 export const fetchUserById = createAsyncThunk("users/fetchById", async (id) => {
-  return userService.get(id);
+  return usersService.get(id);
 });
 
 // PUBLIC_INTERFACE
 export const createUser = createAsyncThunk("users/create", async (payload) => {
-  return userService.create(payload);
+  return usersService.create(payload);
 });
 
 // PUBLIC_INTERFACE
 export const updateUser = createAsyncThunk("users/update", async (payload) => {
-  return userService.update(payload);
+  return usersService.update(payload);
 });
 
 // PUBLIC_INTERFACE
 export const deleteUser = createAsyncThunk("users/delete", async (id) => {
-  await userService.remove(id);
+  await usersService.remove(id);
   return id;
 });
 

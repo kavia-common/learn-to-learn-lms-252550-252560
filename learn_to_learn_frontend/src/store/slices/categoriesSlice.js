@@ -1,46 +1,33 @@
 /* Categories domain slice */
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { createDefaultEntityState, normalizeArray, onPending, onRejected, createEntitySelectors } from "./utils";
+import { getServices } from "../../services";
 
-/**
- * Placeholder service:
- * - categoryService.list()
- * - categoryService.get(id)
- * - categoryService.create(payload)
- * - categoryService.update(payload)
- * - categoryService.remove(id)
- */
-const categoryService = {
-  list: async () => [],
-  get: async (id) => ({ id }),
-  create: async (payload) => payload,
-  update: async (payload) => payload,
-  remove: async (id) => ({ id }),
-};
+const { categoriesService } = getServices();
 
 // PUBLIC_INTERFACE
 export const fetchCategories = createAsyncThunk("categories/fetchAll", async () => {
-  return categoryService.list();
+  return categoriesService.list();
 });
 
 // PUBLIC_INTERFACE
 export const fetchCategoryById = createAsyncThunk("categories/fetchById", async (id) => {
-  return categoryService.get(id);
+  return categoriesService.get(id);
 });
 
 // PUBLIC_INTERFACE
 export const createCategory = createAsyncThunk("categories/create", async (payload) => {
-  return categoryService.create(payload);
+  return categoriesService.create(payload);
 });
 
 // PUBLIC_INTERFACE
 export const updateCategory = createAsyncThunk("categories/update", async (payload) => {
-  return categoryService.update(payload);
+  return categoriesService.update(payload);
 });
 
 // PUBLIC_INTERFACE
 export const deleteCategory = createAsyncThunk("categories/delete", async (id) => {
-  await categoryService.remove(id);
+  await categoriesService.remove(id);
   return id;
 });
 
