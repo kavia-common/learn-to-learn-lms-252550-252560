@@ -20,6 +20,12 @@ import Enrollments from "../views/user/Enrollments";
 import Progress from "../views/user/Progress";
 import Settings from "../views/user/Settings";
 
+// Admin section pages
+import AdminLayout from "../views/admin/AdminLayout";
+import AdminCourses from "../views/admin/AdminCourses";
+import AdminUsers from "../views/admin/AdminUsers";
+import AdminCategories from "../views/admin/AdminCategories";
+
 /**
  * AppRouter declares the application's route tree.
  * It composes ProtectedRoute and RoleRoute for auth and role gating.
@@ -106,16 +112,23 @@ const AppRouter = () => {
           </ProtectedRoute>
         }
       />
+
+      {/* Admin routes with role guard and nested layout */}
       <Route
         path="/admin"
         element={
           <ProtectedRoute>
             <RoleRoute allowedRoles={["admin"]}>
-              <AdminDashboard />
+              <AdminLayout />
             </RoleRoute>
           </ProtectedRoute>
         }
-      />
+      >
+        <Route index element={<AdminDashboard />} />
+        <Route path="courses" element={<AdminCourses />} />
+        <Route path="users" element={<AdminUsers />} />
+        <Route path="categories" element={<AdminCategories />} />
+      </Route>
 
       {/* Not found */}
       <Route path="/404" element={<NotFound />} />
