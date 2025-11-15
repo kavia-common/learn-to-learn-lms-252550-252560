@@ -8,8 +8,8 @@ import { useSelector } from "react-redux";
  * For this implementation, authentication status is read from Redux store (auth slice).
  *
  * Behavior:
- * - If not hydrated yet, remain conservative and redirect to "/" (rare on SPA mount).
- * - If not authenticated, redirects to "/" with state to return after login.
+ * - If not hydrated yet, remain conservative and redirect to "/auth/login" (rare on SPA mount).
+ * - If not authenticated, redirects to "/auth/login" with state to return after login.
  * - If authenticated, renders its children.
  */
 function ProtectedRoute({ children }) {
@@ -18,11 +18,11 @@ function ProtectedRoute({ children }) {
 
   if (!hydrated) {
     // Until hydration completes, block protected content to avoid flicker.
-    return <Navigate to="/" replace state={{ from: location.pathname }} />;
+    return <Navigate to="/auth/login" replace state={{ from: location.pathname }} />;
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/" replace state={{ from: location.pathname }} />;
+    return <Navigate to="/auth/login" replace state={{ from: location.pathname }} />;
   }
   return children;
 }

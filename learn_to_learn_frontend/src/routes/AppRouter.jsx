@@ -29,6 +29,9 @@ import AdminCategories from "../views/admin/AdminCategories";
 /**
  * AppRouter declares the application's route tree.
  * It composes ProtectedRoute and RoleRoute for auth and role gating.
+ * Unauthenticated users are redirected to /auth/login (alias /login also supported).
+ * Unauthorized role access redirects to a safe page (/dashboard).
+ * 404 route is implemented for unknown paths.
  */
 const AppRouter = () => {
   return (
@@ -36,7 +39,9 @@ const AppRouter = () => {
       {/* Public pages */}
       <Route index element={<Home />} />
       <Route path="/auth/login" element={<Login />} />
+      <Route path="/login" element={<Navigate to="/auth/login" replace />} />
       <Route path="/auth/register" element={<Register />} />
+      <Route path="/register" element={<Navigate to="/auth/register" replace />} />
       <Route path="/auth/logout" element={<Logout />} />
 
       {/* Protected pages */}

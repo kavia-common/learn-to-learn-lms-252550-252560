@@ -30,6 +30,10 @@ function Sidebar() {
         <NavLink to="/settings" className="btn btn-outline">Settings</NavLink>
         <NavLink to="/analytics" className="btn btn-outline">Analytics</NavLink>
         <NavLink to="/admin" className="btn btn-outline">Admin</NavLink>
+        <NavLink to="/auth/login" className="btn btn-outline">Login</NavLink>
+        <NavLink to="/auth/register" className="btn btn-outline">Register</NavLink>
+        <NavLink to="/auth/logout" className="btn btn-outline">Logout</NavLink>
+        <NavLink to="/404" className="btn btn-outline">Not Found</NavLink>
       </nav>
     </aside>
   );
