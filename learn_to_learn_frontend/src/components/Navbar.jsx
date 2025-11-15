@@ -18,8 +18,11 @@ function Navbar({ theme = "light", onToggleTheme }) {
       </div>
       <nav aria-label="Top" style={{ display: "flex", gap: 12 }}>
         <NavLink to="/dashboard" className="btn btn-outline">Dashboard</NavLink>
-        <NavLink to="/courses" className="btn btn-outline">Courses</NavLink>
+        <NavLink to="/catalog" className="btn btn-outline">Catalog</NavLink>
+        <NavLink to="/enrollments" className="btn btn-outline">Enrollments</NavLink>
+        <NavLink to="/progress" className="btn btn-outline">Progress</NavLink>
         <NavLink to="/schedule" className="btn btn-outline">Schedule</NavLink>
+        <NavLink to="/settings" className="btn btn-outline">Settings</NavLink>
         <NavLink to="/analytics" className="btn btn-outline">Analytics</NavLink>
         <NavLink to="/admin" className="btn btn-outline">Admin</NavLink>
       </nav>

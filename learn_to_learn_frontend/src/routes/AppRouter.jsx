@@ -13,6 +13,13 @@ import Schedule from "../views/Schedule";
 import Analytics from "../views/Analytics";
 import NotFound from "../views/NotFound";
 
+// Newly added user pages
+import Catalog from "../views/user/Catalog";
+import CourseDetails from "../views/user/CourseDetails";
+import Enrollments from "../views/user/Enrollments";
+import Progress from "../views/user/Progress";
+import Settings from "../views/user/Settings";
+
 /**
  * AppRouter declares the application's route tree.
  * It composes ProtectedRoute and RoleRoute for auth and role gating.
@@ -44,10 +51,50 @@ const AppRouter = () => {
         }
       />
       <Route
+        path="/catalog"
+        element={
+          <ProtectedRoute>
+            <Catalog />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/courses/:courseId"
+        element={
+          <ProtectedRoute>
+            <CourseDetails />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/enrollments"
+        element={
+          <ProtectedRoute>
+            <Enrollments />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/progress"
+        element={
+          <ProtectedRoute>
+            <Progress />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/schedule"
         element={
           <ProtectedRoute>
             <Schedule />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/settings"
+        element={
+          <ProtectedRoute>
+            <Settings />
           </ProtectedRoute>
         }
       />

@@ -22,8 +22,12 @@ function Sidebar() {
       </div>
       <nav aria-label="Sidebar" style={{ display: "grid", gap: 8 }}>
         <NavLink to="/dashboard" className="btn btn-outline">Overview</NavLink>
-        <NavLink to="/courses" className="btn btn-outline">Courses</NavLink>
+        <NavLink to="/catalog" className="btn btn-outline">Catalog</NavLink>
+        <NavLink to="/enrollments" className="btn btn-outline">Enrollments</NavLink>
+        <NavLink to="/progress" className="btn btn-outline">Progress</NavLink>
+        <NavLink to="/courses" className="btn btn-outline">My Courses</NavLink>
         <NavLink to="/schedule" className="btn btn-outline">Schedule</NavLink>
+        <NavLink to="/settings" className="btn btn-outline">Settings</NavLink>
         <NavLink to="/analytics" className="btn btn-outline">Analytics</NavLink>
         <NavLink to="/admin" className="btn btn-outline">Admin</NavLink>
       </nav>
