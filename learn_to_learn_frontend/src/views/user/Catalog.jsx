@@ -4,6 +4,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { Loader, EmptyState, Pagination } from "../../components";
 import { fetchCourses, fetchCoursesQuery, coursesSelectors } from "../../store/slices/coursesSlice";
 import { fetchCategories, categoriesSelectors } from "../../store/slices/categoriesSlice";
+import { slugToTitle } from "../../utils/format";
 
 /**
  * PUBLIC_INTERFACE
@@ -27,10 +28,24 @@ function Catalog() {
   const coursesLoading = useSelector(coursesSelectors.selectLoading);
   const categories = useSelector(categoriesSelectors.selectAll);
   const categoriesLoading = useSelector(categoriesSelectors.selectLoading);
+  const [categoriesError, setCategoriesError] = useState("");
 
   useEffect(() => {
-    // Load categories immediately
-    dispatch(fetchCategories());
+    // Load categories from DummyJSON (or local service) immediately
+    let mounted = true;
+    (async () => {
+      try {
+        setCategoriesError("");
+        await dispatch(fetchCategories()).unwrap();
+      } catch (err) {
+        if (!mounted) return;
+        // Non-blocking: show message but keep UI usable
+        setCategoriesError("Failed to load categories. You can still browse all courses.");
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
   }, [dispatch]);
 
   // Load courses using server (remote) pagination/search when feature flag is set.
@@ -85,7 +100,7 @@ function Catalog() {
 
   const total = remote ? storeTotal : filtered.length;
   const startIdx = (page - 1) * pageSize;
-  const pageItems = remote ? courses : filtered.slice(startIdx, startIdx + pageSize);
+  const pageItems = remote ? (Array.isArray(courses) ? courses : []) : filtered.slice(startIdx, startIdx + pageSize);
 
   // Sync URL params for shareability
   useEffect(() => {
@@ -151,12 +166,24 @@ function Catalog() {
               }}
             >
               <option value="">All</option>
-              {categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.name}
-                </option>
-              ))}
+              {(Array.isArray(categories) ? categories : []).map((cat) => {
+                const label = cat?.name ? slugToTitle(cat.name) : slugToTitle(cat?.id ?? "");
+                return (
+                  <option key={cat.id} value={cat.id}>
+                    {label || "Category"}
+                  </option>
+                );
+              })}
             </select>
+            {categoriesLoading ? (
+              <div aria-live="polite" style={{ marginTop: 6, fontSize: 12, color: "var(--text-secondary)" }}>
+                Loading categories...
+              </div>
+            ) : categoriesError ? (
+              <div role="alert" style={{ marginTop: 6, fontSize: 12, color: "var(--error, #EF4444)" }}>
+                {categoriesError}
+              </div>
+            ) : null}
           </div>
 
           <div>
@@ -216,7 +243,7 @@ function Catalog() {
       ) : (
         <>
           <div aria-live="polite" style={{ marginTop: 8, color: "var(--text-secondary)" }}>
-            {typeof total === "number" ? `${total} result${total === 1 ? "" : "s"}` : null}
+            {Number.isFinite(total) ? `${total} result${Number(total) === 1 ? "" : "s"}` : null}
           </div>
           <div className="cards" style={{ marginTop: 16 }}>
             {pageItems.map((c) => (
