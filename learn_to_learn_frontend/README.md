@@ -17,10 +17,28 @@ These choices follow the Ocean Professional style with updates informed by the p
 
 ## Features
 
+- **Routing**: React Router v6 with protected and role-based routes
 - **Lightweight**: Vanilla CSS + React
 - **Modern UI**: Subtle gradients, rounded corners, accessible contrast
 - **Dark Mode**: Toggle via the UI theme switch
 - **Responsive**: Cards and layout adapt to screen sizes
+
+## Routes
+
+- `/` Home (public)
+- `/dashboard` (protected)
+- `/courses` (protected)
+- `/schedule` (protected)
+- `/analytics` (protected)
+- `/admin` (protected + admin only)
+
+Auth is mocked via `localStorage` under key `bb_auth`:
+```json
+{
+  "isAuthenticated": true,
+  "user": { "id": "u1", "name": "Alex", "role": "admin" }
+}
+```
 
 ## Getting Started
 
