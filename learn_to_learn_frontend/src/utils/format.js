@@ -8,6 +8,8 @@
  * - Replaces hyphens/underscores with spaces
  * - Collapses multiple separators
  * - Title-cases each word
+ * @param {string} str - The slug or id to format
+ * @returns {string} Title-cased label
  */
 export function slugToTitle(str) {
   if (str == null) return "";

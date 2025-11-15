@@ -51,6 +51,7 @@ export function mapCategoryListFromDummyJSON(list) {
   /**
    * Maps DummyJSON /products/categories array of strings to LMS Category model.
    * Category { id: slugifiedName, name, description:'', color: derived }
+   * Note: UI should display using slugToTitle(name) to get "Home Decoration" style labels.
    */
   const toSlug = (s) =>
     String(s || "")

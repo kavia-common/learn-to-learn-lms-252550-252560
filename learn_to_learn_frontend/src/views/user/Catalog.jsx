@@ -10,8 +10,10 @@ import { slugToTitle } from "../../utils/format";
  * PUBLIC_INTERFACE
  * Course Catalog page
  * - Lists courses with filters (category, level), search, and pagination.
- * - Uses Redux slices for courses and categories.
- * - Respects remote API mode via services layer.
+ * - Fetches categories from DummyJSON via service on mount
+ * - Populates Category dropdown with readable labels (Title Case)
+ * - When selecting a category, fetches products by selected category in remote mode
+ * - Handles empty/undefined categories and resilient rendering
  */
 function Catalog() {
   const dispatch = useDispatch();
@@ -26,12 +28,14 @@ function Catalog() {
 
   const courses = useSelector(coursesSelectors.selectAll);
   const coursesLoading = useSelector(coursesSelectors.selectLoading);
-  const categories = useSelector(categoriesSelectors.selectAll);
+
+  // Categories from store
+  const categoriesAll = useSelector(categoriesSelectors.selectAll);
   const categoriesLoading = useSelector(categoriesSelectors.selectLoading);
   const [categoriesError, setCategoriesError] = useState("");
 
+  // Fetch categories on mount
   useEffect(() => {
-    // Load categories from DummyJSON (or local service) immediately
     let mounted = true;
     (async () => {
       try {
@@ -39,7 +43,6 @@ function Catalog() {
         await dispatch(fetchCategories()).unwrap();
       } catch (err) {
         if (!mounted) return;
-        // Non-blocking: show message but keep UI usable
         setCategoriesError("Failed to load categories. You can still browse all courses.");
       }
     })();
@@ -48,11 +51,13 @@ function Catalog() {
     };
   }, [dispatch]);
 
-  // Load courses using server (remote) pagination/search when feature flag is set.
+  // Determine remote mode (DummyJSON) or local mock
+  const flags = (process.env.REACT_APP_FEATURE_FLAGS || "").toLowerCase();
+  const base = process.env.REACT_APP_API_BASE || "";
+  const remote = Boolean(base) && flags.split(",").map((s) => s.trim()).includes("remote");
+
+  // Load courses. In remote mode, respect category/q/pagination and re-fetch when they change
   useEffect(() => {
-    const flags = (process.env.REACT_APP_FEATURE_FLAGS || "").toLowerCase();
-    const base = process.env.REACT_APP_API_BASE || "";
-    const remote = Boolean(base) && flags.split(",").map((s) => s.trim()).includes("remote");
     if (remote) {
       dispatch(
         fetchCoursesQuery({
@@ -63,12 +68,12 @@ function Catalog() {
         })
       );
     } else {
-      // fallback to legacy local fetch and client-side filter
+      // local mode: fetch once; filter client-side
       dispatch(fetchCourses());
     }
-  }, [dispatch, category, query, page, pageSize]);
+  }, [dispatch, remote, category, query, page, pageSize]);
 
-  // Apply filters client-side (remote APIs could support query server-side later)
+  // Client-side filtering for local mode
   const filtered = useMemo(() => {
     let list = courses || [];
     const q = (query || "").trim().toLowerCase();
@@ -80,7 +85,6 @@ function Catalog() {
       );
     }
     if (category) {
-      // category in our model is categoryId = DummyJSON category slug/name
       list = list.filter((c) => String(c.categoryId || "") === String(category));
     }
     if (level) {
@@ -91,13 +95,10 @@ function Catalog() {
     return list;
   }, [courses, query, category, level]);
 
-  const flags = (process.env.REACT_APP_FEATURE_FLAGS || "").toLowerCase();
-  const base = process.env.REACT_APP_API_BASE || "";
-  const remote = Boolean(base) && flags.split(",").map((s) => s.trim()).includes("remote");
-
   // Always call hooks unconditionally
   const storeTotal = useSelector((s) => s.courses?.meta?.total) || 0;
 
+  // Remote uses server total; local uses filtered length
   const total = remote ? storeTotal : filtered.length;
   const startIdx = (page - 1) * pageSize;
   const pageItems = remote ? (Array.isArray(courses) ? courses : []) : filtered.slice(startIdx, startIdx + pageSize);
@@ -113,6 +114,10 @@ function Catalog() {
   }, [query, category, level, page, setSearchParams]);
 
   const resetPage = () => setPage(1);
+
+  // Safe category list: ensure array and map to label using slugToTitle
+  const safeCategories = Array.isArray(categoriesAll) ? categoriesAll : [];
+  const hasCategories = safeCategories.length > 0;
 
   return (
     <div style={{ padding: 24 }}>
@@ -166,14 +171,17 @@ function Catalog() {
               }}
             >
               <option value="">All</option>
-              {(Array.isArray(categories) ? categories : []).map((cat) => {
-                const label = cat?.name ? slugToTitle(cat.name) : slugToTitle(cat?.id ?? "");
-                return (
-                  <option key={cat.id} value={cat.id}>
-                    {label || "Category"}
-                  </option>
-                );
-              })}
+              {hasCategories &&
+                safeCategories.map((cat) => {
+                  const id = cat?.id ?? "";
+                  const labelSource = cat?.name ?? id;
+                  const label = slugToTitle(labelSource);
+                  return (
+                    <option key={id} value={id}>
+                      {label || "Category"}
+                    </option>
+                  );
+                })}
             </select>
             {categoriesLoading ? (
               <div aria-live="polite" style={{ marginTop: 6, fontSize: 12, color: "var(--text-secondary)" }}>

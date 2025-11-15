@@ -43,7 +43,8 @@ const categoriesSlice = createSlice({
       .addCase(fetchCategories.rejected, onRejected)
       .addCase(fetchCategories.fulfilled, (state, action) => {
         state.loading = false;
-        const { byId, allIds } = normalizeArray(action.payload || []);
+        const payload = Array.isArray(action.payload) ? action.payload : [];
+        const { byId, allIds } = normalizeArray(payload);
         state.byId = byId;
         state.allIds = allIds;
       })

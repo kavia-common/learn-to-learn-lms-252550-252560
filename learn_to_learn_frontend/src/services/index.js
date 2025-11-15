@@ -135,6 +135,8 @@ function remoteCoursesService() {
 
 function remoteCategoriesService() {
   // DummyJSON-backed categories
+  // Returns [{ id: <slug>, name: <original or slug>, ... }]
+  // id preserves the original slug for subsequent /products/category/{slug} calls.
   return {
     async list() {
       const arr = await api.get(endpoints.dummy.categories);
