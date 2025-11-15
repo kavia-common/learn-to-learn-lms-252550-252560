@@ -1,7 +1,7 @@
- /**
-  * PUBLIC_INTERFACE
-  * normalizeTaxonomy: safe-normalize a taxonomy array of { name, subcategories[] }.
-  */
+/**
+ * PUBLIC_INTERFACE
+ * normalizeTaxonomy: safe-normalize a taxonomy array of { name, subcategories[] }.
+ */
 export function normalizeTaxonomy(input) {
   const items = Array.isArray(input) ? input : [];
   return items
@@ -11,21 +11,6 @@ export function normalizeTaxonomy(input) {
     }))
     .filter((c) => c.name.length > 0);
 }
-
-/**
- * PUBLIC_INTERFACE
- * Filter courses by curated category label, with safe fallbacks.
- */
-export const filterByCategory = (courses, category) => {
-  if (!Array.isArray(courses)) return [];
-  if (!category || category === 'All') return courses;
-
-  const norm = String(category).trim().toLowerCase();
-  return courses.filter((course) => {
-    const c = (course?.category || '').toString().trim().toLowerCase();
-    return c === norm;
-  });
-};
 
 /**
  * PUBLIC_INTERFACE
@@ -40,10 +25,10 @@ export function applyCourseFilters(courses, selectedCategory, selectedSubcategor
 
   let out = list;
   if (cat) {
-    out = out.filter((c) => String(c?.category || "").trim().toLowerCase() === cat.toLowerCase());
+    out = out.filter((c) => String(c?.category || "").trim() === cat);
   }
   if (sub) {
-    out = out.filter((c) => String(c?.subcategory || "").trim().toLowerCase() === sub.toLowerCase());
+    out = out.filter((c) => String(c?.subcategory || "").trim() === sub);
   }
   return out;
 }
