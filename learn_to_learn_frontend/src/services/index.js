@@ -1,12 +1,10 @@
-/*
+//
 // Service exports and compatibility factory
-*/
+//
 
 export * as storage from './storage';
 export * from './categoryService';
 export * from './courseService';
-export * from './levelService';
-export { authService } from './authService';
 
 // PUBLIC_INTERFACE
 export function getServices() {
@@ -17,7 +15,6 @@ export function getServices() {
   // Lazy import to avoid circular deps
   const category = require('./categoryService');
   const course = require('./courseService');
-  const auth = require('./authService');
 
   return {
     // PUBLIC_INTERFACE
@@ -25,6 +22,7 @@ export function getServices() {
       /** Get curated categories using Strapi (when remote enabled) with fallback */
       list: async (opts = {}) => {
         const res = await category.getCategories(opts);
+        // Shape legacy callers expect: array of strings
         return res;
       },
     },
@@ -36,7 +34,5 @@ export function getServices() {
         return res;
       },
     },
-    // PUBLIC_INTERFACE
-    authService: auth.authService,
   };
 }
