@@ -18,7 +18,8 @@ These choices follow the Ocean Professional style with updates informed by the p
 ## Features
 
 - **Routing**: React Router v6 with protected and role-based routes
-- **Lightweight**: Vanilla CSS + React
+- **State**: Redux Toolkit + react-redux
+- **Auth**: Redux auth slice with localStorage persistence (key: `bb_auth`)
 - **Modern UI**: Subtle gradients, rounded corners, accessible contrast
 - **Dark Mode**: Toggle via the UI theme switch
 - **Responsive**: Cards and layout adapt to screen sizes
@@ -32,13 +33,22 @@ These choices follow the Ocean Professional style with updates informed by the p
 - `/analytics` (protected)
 - `/admin` (protected + admin only)
 
-Auth is mocked via `localStorage` under key `bb_auth`:
+### Auth Model (Prototype)
+
+Auth is mocked and persisted under key `bb_auth` and hydrated into Redux on app start.
+
+Shape:
 ```json
 {
   "isAuthenticated": true,
   "user": { "id": "u1", "name": "Alex", "role": "admin" }
 }
 ```
+
+Redux actions:
+- `auth/loadFromStorage` hydrates on startup
+- `auth/login`, `auth/register` set user and persist
+- `auth/logout` clears user and localStorage
 
 ## Getting Started
 
