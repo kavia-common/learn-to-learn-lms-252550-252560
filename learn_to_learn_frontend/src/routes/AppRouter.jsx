@@ -2,7 +2,10 @@ import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 import RoleRoute from "./RoleRoute";
-import Home from "../views/Home";
+import Home from "../pages/Home";
+import Login from "../pages/Auth/Login";
+import Register from "../pages/Auth/Register";
+import Logout from "../pages/Auth/Logout";
 import Dashboard from "../views/Dashboard";
 import AdminDashboard from "../views/AdminDashboard";
 import Courses from "../views/Courses";
@@ -17,7 +20,13 @@ import NotFound from "../views/NotFound";
 const AppRouter = () => {
   return (
     <Routes>
+      {/* Public pages */}
       <Route index element={<Home />} />
+      <Route path="/auth/login" element={<Login />} />
+      <Route path="/auth/register" element={<Register />} />
+      <Route path="/auth/logout" element={<Logout />} />
+
+      {/* Protected pages */}
       <Route
         path="/dashboard"
         element={
@@ -60,6 +69,8 @@ const AppRouter = () => {
           </ProtectedRoute>
         }
       />
+
+      {/* Not found */}
       <Route path="/404" element={<NotFound />} />
       <Route path="*" element={<Navigate to="/404" replace />} />
     </Routes>
