@@ -20,7 +20,7 @@ function Sidebar() {
       <div style={{ fontWeight: 800, marginBottom: 12, color: "var(--text-secondary)" }}>
         Menu
       </div>
-      <nav style={{ display: "grid", gap: 8 }}>
+      <nav aria-label="Sidebar" style={{ display: "grid", gap: 8 }}>
         <NavLink to="/dashboard" className="btn btn-outline">Overview</NavLink>
         <NavLink to="/courses" className="btn btn-outline">Courses</NavLink>
         <NavLink to="/schedule" className="btn btn-outline">Schedule</NavLink>

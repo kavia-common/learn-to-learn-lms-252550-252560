@@ -3,6 +3,7 @@ import './App.css';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import AppRouter from './routes/AppRouter';
+import Footer from './components/Footer';
 
 // PUBLIC_INTERFACE
 function App() {
@@ -31,6 +32,7 @@ function App() {
           <AppRouter />
         </section>
       </main>
+      <Footer />
     </div>
   );
 }
