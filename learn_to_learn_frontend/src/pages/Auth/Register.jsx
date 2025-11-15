@@ -59,7 +59,18 @@ function Register() {
       dispatch(registerAction(user));
       navigate(from, { replace: true });
     } catch (err) {
-      setFormError("Unable to register. Please try again.");
+      const msg = err?.message || "";
+      if (/exists|taken|email/i.test(msg)) {
+        setFormError("Email already in use. Please use a different email.");
+      } else if (/401|invalid/i.test(msg)) {
+        setFormError("Registration failed due to invalid data.");
+      } else if (/404/i.test(msg)) {
+        setFormError("Service not found. Please try again later.");
+      } else if (/timed out/i.test(msg)) {
+        setFormError("Network timeout. Please check your connection and try again.");
+      } else {
+        setFormError("Unable to register. Please try again.");
+      }
     } finally {
       setSubmitting(false);
     }

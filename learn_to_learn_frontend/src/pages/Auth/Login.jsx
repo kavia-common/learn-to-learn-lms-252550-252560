@@ -7,7 +7,7 @@ import { login as loginAction } from "../../store/slices/authSlice";
 /**
  * PUBLIC_INTERFACE
  * Login form page. Validates email and password, displays errors, integrates with Redux.
- * Uses services.authService.login to simulate auth then dispatches auth/login.
+ * Uses services.authService.login then dispatches auth/login.
  */
 function Login() {
   const dispatch = useDispatch();
@@ -47,13 +47,22 @@ function Login() {
 
     setSubmitting(true);
     try {
-      // In prototype mode, the service will echo a user; we pass name from email prefix
       const name = email.split("@")[0] || "Learner";
       const user = await authService.login({ email, password, name, role: "user" });
+      // Persist via Redux (slice persists to localStorage)
       dispatch(loginAction(user));
       navigate(from, { replace: true });
     } catch (err) {
-      setFormError("Unable to log in. Please try again.");
+      const msg = err?.message || "";
+      if (/401|invalid/i.test(msg)) {
+        setFormError("Invalid email or password.");
+      } else if (/404/i.test(msg)) {
+        setFormError("Service not found. Please try again later.");
+      } else if (/timed out/i.test(msg)) {
+        setFormError("Network timeout. Please check your connection and try again.");
+      } else {
+        setFormError("Unable to log in. Please try again.");
+      }
     } finally {
       setSubmitting(false);
     }
