@@ -1,0 +1,96 @@
+{
+  "categories": [
+    {
+      "name": "Programming & Development",
+      "subcategories": [
+        "Web Development",
+        "Mobile App Development",
+        "Backend Development",
+        "Frontend Development",
+        "Data Structures & Algorithms",
+        "Software Engineering",
+        "Game Development",
+        "DevOps"
+      ]
+    },
+    {
+      "name": "Data & AI",
+      "subcategories": [
+        "Data Science",
+        "Machine Learning",
+        "Artificial Intelligence",
+        "Deep Learning",
+        "Data Analytics",
+        "Big Data",
+        "Cloud & Distributed Systems"
+      ]
+    },
+    {
+      "name": "Business & Management",
+      "subcategories": [
+        "Business Essentials",
+        "Entrepreneurship",
+        "Finance & Accounting",
+        "Marketing & Sales",
+        "Project Management",
+        "Leadership & Team Management",
+        "Operations Management"
+      ]
+    },
+    {
+      "name": "Design & Creativity",
+      "subcategories": [
+        "UI/UX Design",
+        "Graphic Design",
+        "Animation",
+        "Video Editing",
+        "3D Modeling",
+        "Creative Writing"
+      ]
+    },
+    {
+      "name": "IT & Software",
+      "subcategories": [
+        "Cybersecurity",
+        "Networking",
+        "Cloud Computing",
+        "Database Management",
+        "IT Support & ITIL",
+        "Operating Systems"
+      ]
+    },
+    {
+      "name": "Personal Development",
+      "subcategories": [
+        "Communication Skills",
+        "Time Management",
+        "Productivity",
+        "Public Speaking",
+        "Career Development",
+        "Stress Management"
+      ]
+    },
+    {
+      "name": "Language Learning",
+      "subcategories": [
+        "English",
+        "Spanish",
+        "French",
+        "German",
+        "Hindi",
+        "Japanese"
+      ]
+    },
+    {
+      "name": "School & Academic",
+      "subcategories": [
+        "Mathematics",
+        "Physics",
+        "Chemistry",
+        "Biology",
+        "History",
+        "Economics"
+      ]
+    }
+  ]
+}
